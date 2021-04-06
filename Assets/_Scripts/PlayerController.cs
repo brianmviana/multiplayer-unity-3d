@@ -22,15 +22,18 @@ public class PlayerController : NetworkBehaviour {
         transform.Translate(0, 0, z);
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            Fire();
+            CmdFire();
         }
 
     }
 
-    void Fire() {
+    [Command]
+    void CmdFire() {
         var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpanw.position, bulletSpanw.rotation);
 
         bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * 6;
+
+        NetworkServer.Spawn(bullet);
 
         Destroy(bullet, 2.0f);
     }
