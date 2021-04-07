@@ -4,11 +4,15 @@ using UnityEngine.Networking;
 
 public class Health : NetworkBehaviour {
 
+    public bool destroyOnDeath;
     public const int maxHealth = 100;
+
+    //public Transform[] spawns;
 
     [SyncVar(hook = "OnChangeHealth")]
     public int currentHealth = maxHealth;
-        
+            
+
     public RectTransform healthBar;
 
     public void TakeDamage(int amount) {
@@ -31,8 +35,16 @@ public class Health : NetworkBehaviour {
 
     [ClientRpc]
     void RpcRespawn() {
-        if (isLocalPlayer) {
-            transform.position = Vector3.zero;
+        if (destroyOnDeath) {
+            Destroy(gameObject);
+        }
+        else {
+            if (isLocalPlayer) {
+                transform.position = Vector3.zero;
+
+                //transform.position = spawns[Random.Range(0, spawns.Length)].transform.position;
+            }
         }
     }
+
 }

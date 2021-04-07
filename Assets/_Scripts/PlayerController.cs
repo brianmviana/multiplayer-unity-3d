@@ -6,9 +6,14 @@ public class PlayerController : NetworkBehaviour {
     public GameObject bulletPrefab;
     public Transform bulletSpanw;
 
+    public Color playerColor;
+
+
+
     public override void OnStartLocalPlayer() {
         GetComponent<MeshRenderer>().material.color = Color.blue;
     }
+
 
     void Update() {
         if (!isLocalPlayer) {
@@ -23,8 +28,11 @@ public class PlayerController : NetworkBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Space)) {
             CmdFire();
+            CmdPlayerColor(playerColor);
         }
-
+        if (Input.GetKeyDown(KeyCode.C)) {
+            CmdPlayerColor(playerColor);
+        }
     }
 
     [Command]
@@ -36,5 +44,16 @@ public class PlayerController : NetworkBehaviour {
         NetworkServer.Spawn(bullet);
 
         Destroy(bullet, 2.0f);
+    }
+
+    [Command]
+    void CmdPlayerColor(Color color) {
+        GetComponent<MeshRenderer>().material.color = color;
+        RpcPlayerColor(color);
+    }
+    
+    [ClientRpc]
+    void RpcPlayerColor(Color color) {
+        GetComponent<MeshRenderer>().material.color = color;    
     }
 }
